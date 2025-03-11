@@ -2,6 +2,7 @@
   "expo": {
     "name": "interview-app",
     "slug": "interview-app",
+    "scheme": "myapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -19,10 +20,38 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
+      ],
+      "package": "com.kimyounggil.interviewapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "expo": {
+      "scheme": "myapp",
+      "plugins": [
+        [
+          "expo-audio",
+          {
+            "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
+          }
+        ]
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-audio"
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "0aa97d4e-881d-47c5-a59f-f6bd2abbd57f"
+      }
     }
   }
 }
