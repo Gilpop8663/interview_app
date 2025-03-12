@@ -14,7 +14,8 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.kimyounggil.interviewapp"
     },
     "android": {
       "adaptiveIcon": {
@@ -37,14 +38,15 @@
           "expo-audio",
           {
             "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
+          },
+          "expo-av",
+          {
+            "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
           }
         ]
       ]
     },
-    "plugins": [
-      "expo-router",
-      "expo-audio"
-    ],
+    "plugins": ["expo-router", "expo-audio"],
     "extra": {
       "router": {
         "origin": false
