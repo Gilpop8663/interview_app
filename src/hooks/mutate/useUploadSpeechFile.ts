@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { UPLOAD_SPEECH_FILE } from '../../gql/mutate/audio';
+import { PROCESS_INTERVIEW_AUDIO } from '../../gql/mutate/interview';
 
 interface Result {
   ok: boolean;
@@ -8,27 +8,28 @@ interface Result {
 
 interface Input {
   file: string; // Base64 파일 문자열
+  question: string;
 }
 
-export const useUploadSpeechFile = () => {
-  const [uploadSpeechFileMutation, { data, loading, error }] = useMutation<
+export const useProcessInterviewAudio = () => {
+  const [processInterviewAudioMutation, { data, loading, error }] = useMutation<
     {
-      uploadSpeechFile: Result;
+      processInterviewAudio: Result;
     },
     {
       input: Input;
     }
-  >(UPLOAD_SPEECH_FILE);
+  >(PROCESS_INTERVIEW_AUDIO);
 
-  const uploadSpeechFile = async (file: string) => {
+  const processInterviewAudio = async (input: Input) => {
     try {
-      const result = await uploadSpeechFileMutation({
+      const result = await processInterviewAudioMutation({
         variables: {
-          input: { file },
+          input,
         },
       });
 
-      return result.data?.uploadSpeechFile;
+      return result.data?.processInterviewAudio;
     } catch (err) {
       console.error('Error uploading file:', err);
       throw err;
@@ -36,7 +37,7 @@ export const useUploadSpeechFile = () => {
   };
 
   return {
-    uploadSpeechFile,
+    processInterviewAudio,
     data,
     loading,
     error,
