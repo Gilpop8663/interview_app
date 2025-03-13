@@ -1,13 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   View,
-  Button,
   Alert,
   Text,
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
-  Platform,
 } from 'react-native';
 import { useAudioRecorder, AudioModule, RecordingPresets } from 'expo-audio';
 import AudioPlayer from './AudioPlayer';
@@ -25,11 +23,18 @@ const AudioRecorder = ({ question }: Props) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { processInterviewAudio, data } = useProcessInterviewAudio();
+  const [recordingTime, setRecordingTime] = useState(0);
+  const recordInterval = useRef<NodeJS.Timeout | null>(null);
 
   const record = async () => {
     await audioRecorder.prepareToRecordAsync();
     audioRecorder.record();
     setIsRecording(true);
+    setRecordingTime(0); // 녹음 시작 시 초기화
+
+    recordInterval.current = setInterval(() => {
+      setRecordingTime((prev) => prev + 1);
+    }, 1000);
   };
 
   const uploadAudio = async () => {
@@ -67,9 +72,22 @@ const AudioRecorder = ({ question }: Props) => {
 
   const stopRecording = async () => {
     await audioRecorder.stop();
+
+    if (recordInterval.current) {
+      clearInterval(recordInterval.current);
+    }
+
     setRecordedUri(audioRecorder.uri);
     setIsRecording(false);
-    Alert.alert('녹음이 완료되었습니다!', `파일 경로: ${audioRecorder.uri}`);
+    Alert.alert('녹음이 완료되었습니다!');
+  };
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${
+      remainingSeconds < 10 ? `0${remainingSeconds}` : remainingSeconds
+    }`;
   };
 
   useEffect(() => {
@@ -84,7 +102,6 @@ const AudioRecorder = ({ question }: Props) => {
   return (
     <View style={styles.container}>
       <Text style={styles.question}>Q: {question}</Text>
-
       <View style={styles.recordingContainer}>
         <TouchableOpacity
           style={[styles.recordButton, isRecording && styles.recording]}
@@ -100,15 +117,17 @@ const AudioRecorder = ({ question }: Props) => {
           </Text>
         </TouchableOpacity>
       </View>
-
-      {recordedUri && (
+      {/* ⏳ 녹음 시간 표시 */}
+      {isRecording && (
+        <Text style={styles.timerText}>
+          ⏳ 녹음 시간: {formatTime(recordingTime)}
+        </Text>
+      )}
+      {!isRecording && recordedUri && (
         <View style={styles.audioInfo}>
-          <Text style={styles.recordedText}>녹음 파일 경로:</Text>
-          <Text style={styles.uriText}>{recordedUri}</Text>
           <AudioPlayer uri={recordedUri} />
         </View>
       )}
-
       <TouchableOpacity
         style={[
           styles.uploadButton,
@@ -123,7 +142,6 @@ const AudioRecorder = ({ question }: Props) => {
           <Text style={styles.uploadButtonText}>답변 제출</Text>
         )}
       </TouchableOpacity>
-
       {data?.processInterviewAudio.feedback && (
         <Text style={styles.feedback}>
           {data?.processInterviewAudio.feedback}
@@ -203,6 +221,12 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 20,
     elevation: 4,
+  },
+  timerText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#ff4d4d',
+    marginBottom: 15,
   },
   uploadButtonText: {
     color: '#fff',
