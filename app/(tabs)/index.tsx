@@ -17,6 +17,11 @@ const HomeScreen = () => {
       <Link href="/settings" style={styles.linkButton}>
         <Text style={styles.linkText}>설정</Text>
       </Link>
+
+      {/* 로그인 링크 추가 */}
+      <Link href="/login" style={styles.linkButton}>
+        <Text style={styles.linkText}>로그인</Text>
+      </Link>
     </View>
   );
 };

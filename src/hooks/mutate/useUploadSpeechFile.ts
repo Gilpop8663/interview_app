@@ -1,9 +1,12 @@
 import { useMutation } from '@apollo/client';
 import { PROCESS_INTERVIEW_AUDIO } from '../../gql/mutate/interview';
+import { useEffect } from 'react';
 
 interface Result {
   ok: boolean;
-  feedback: string | null;
+  feedback: string;
+  habits: string;
+  speed: string;
 }
 
 interface Input {
@@ -11,15 +14,16 @@ interface Input {
   question: string;
 }
 
-export const useProcessInterviewAudio = () => {
-  const [processInterviewAudioMutation, { data, loading, error }] = useMutation<
-    {
-      processInterviewAudio: Result;
-    },
-    {
-      input: Input;
-    }
-  >(PROCESS_INTERVIEW_AUDIO);
+export const useProcessInterviewAudio = (question: string) => {
+  const [processInterviewAudioMutation, { data, loading, error, reset }] =
+    useMutation<
+      {
+        processInterviewAudio: Result;
+      },
+      {
+        input: Input;
+      }
+    >(PROCESS_INTERVIEW_AUDIO);
 
   const processInterviewAudio = async (input: Input) => {
     try {
@@ -36,10 +40,15 @@ export const useProcessInterviewAudio = () => {
     }
   };
 
+  useEffect(() => {
+    reset();
+  }, [question]);
+
   return {
     processInterviewAudio,
     data,
     loading,
     error,
+    reset,
   };
 };

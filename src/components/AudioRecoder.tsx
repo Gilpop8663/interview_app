@@ -12,6 +12,7 @@ import AudioPlayer from './AudioPlayer';
 import * as FileSystem from 'expo-file-system'; // 파일 읽기 용도
 import { useProcessInterviewAudio } from '../hooks/mutate/useUploadSpeechFile';
 import { Ionicons } from '@expo/vector-icons'; // 아이콘 추가
+import { FeedbackCard } from './FeedbackCard';
 
 interface Props {
   question: string;
@@ -19,10 +20,10 @@ interface Props {
 
 const AudioRecorder = ({ question }: Props) => {
   const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
+  const { processInterviewAudio, data } = useProcessInterviewAudio(question);
   const [recordedUri, setRecordedUri] = useState<string | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { processInterviewAudio, data } = useProcessInterviewAudio();
   const [recordingTime, setRecordingTime] = useState(0);
   const recordInterval = useRef<NodeJS.Timeout | null>(null);
 
@@ -142,10 +143,32 @@ const AudioRecorder = ({ question }: Props) => {
           <Text style={styles.uploadButtonText}>답변 제출</Text>
         )}
       </TouchableOpacity>
-      {data?.processInterviewAudio.feedback && (
-        <Text style={styles.feedback}>
-          {data?.processInterviewAudio.feedback}
+      {isLoading && (
+        <Text style={styles.loadingText}>
+          ⏳ 피드백을 생성하는 중입니다. 약 10~15초 정도 소요되니 잠시만 기다려
+          주세요.
         </Text>
+      )}
+      {/* 피드백 항목들 */}
+      {data?.processInterviewAudio.feedback && (
+        <FeedbackCard
+          title="피드백"
+          feedback={data?.processInterviewAudio.feedback}
+        />
+      )}
+
+      {data?.processInterviewAudio.habits && (
+        <FeedbackCard
+          title="습관 피드백"
+          feedback={data?.processInterviewAudio.habits}
+        />
+      )}
+
+      {data?.processInterviewAudio.speed && (
+        <FeedbackCard
+          title="속도 피드백"
+          feedback={data?.processInterviewAudio.speed}
+        />
       )}
     </View>
   );
@@ -241,6 +264,31 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'green',
     textAlign: 'center',
+  },
+  feedbackSection: {
+    marginTop: 20,
+    width: '100%',
+    padding: 10,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
+  },
+  feedbackTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#007bff',
+    marginBottom: 5,
+  },
+  loadingText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#555', // 부드러운 색상으로 가독성 확보
+    textAlign: 'center',
+    marginTop: 10,
+    backgroundColor: '#f0f0f0', // 약간의 배경색 추가
+    padding: 10,
+    borderRadius: 8,
   },
 });
 

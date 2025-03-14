@@ -27,8 +27,6 @@ export default function InterviewFetcher() {
         >
           <Text style={styles.nextButtonText}>다음 질문</Text>
         </TouchableOpacity>
-
-        <Text style={styles.feedback}>피드백이 여기에 나옵니다.</Text>
       </View>
     </ScrollView>
   );

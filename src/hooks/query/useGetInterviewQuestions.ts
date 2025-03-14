@@ -43,7 +43,23 @@ export const useGetInterviewQuestions = () => {
       setQuestionIndex(newIndex);
       saveProgress(newIndex);
     } else {
-      Alert.alert('End of Interview', '면접이 종료되었습니다.');
+      Alert.alert(
+        'End of Interview',
+        '면접이 종료되었습니다. 다시 시작하시겠습니까?',
+        [
+          {
+            text: '예',
+            onPress: () => {
+              setQuestionIndex(0);
+              saveProgress(0);
+            },
+          },
+          {
+            text: '아니오',
+            onPress: () => console.log('면접 종료'),
+          },
+        ]
+      );
     }
   };
 
