@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { Link } from 'expo-router';
+import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 
 const LoginScreen = () => {
@@ -28,6 +29,13 @@ const LoginScreen = () => {
       />
 
       <Button title="로그인" onPress={handleLogin} />
+
+      <View style={styles.signupContainer}>
+        <Text style={styles.signupText}>회원가입 하시겠습니까?</Text>
+        <Link style={styles.signUp} href="/signUp">
+          <Text style={styles.signUpText}>회원가입</Text>
+        </Link>
+      </View>
     </View>
   );
 };
@@ -54,13 +62,22 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 8,
   },
-  googleButtonContainer: {
+  signupContainer: {
     marginTop: 20,
     width: '100%',
+    alignItems: 'center',
   },
-  googleButton: {
-    width: '100%',
-    height: 48,
+  signupText: {
+    fontSize: 16,
+    color: '#666',
+  },
+  signUp: {
+    marginTop: 10,
+  },
+  signUpText: {
+    fontSize: 16,
+    color: '#0066CC', // 부드러운 파란색
+    fontWeight: '600',
   },
 });
 
