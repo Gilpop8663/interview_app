@@ -4,7 +4,9 @@ import { useSendVerifyEmail } from '../src/hooks/mutate/user/useSendVerifyEmail'
 import { useVerifyEmail } from '../src/hooks/mutate/user/useVerifyEmail';
 import { useCreateAccount } from '../src/hooks/mutate/user/useCreateAccount';
 import { useRouter } from 'expo-router';
-import { Controller, FieldValues, useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
+import * as SecureStore from 'expo-secure-store';
+import { ACCESS_TOKEN } from '../src/constants/storage';
 
 interface FormData {
   email: string;
@@ -29,7 +31,7 @@ const SignupScreen = () => {
   const { sendVerifyEmail } = useSendVerifyEmail();
   const { verifyEmail } = useVerifyEmail();
   const { createAccount, loading } = useCreateAccount();
-  const router = useRouter(); // useRouter 훅 사용
+  const router = useRouter();
 
   const isValidPassword = (password: string) => {
     const regex =
@@ -109,6 +111,10 @@ const SignupScreen = () => {
 
     if (result?.ok) {
       Alert.alert('회원가입 성공', '회원가입에 성공했습니다');
+
+      if (result.token) {
+        await SecureStore.setItemAsync(ACCESS_TOKEN, result.token);
+      }
       router.push('/(tabs)');
       return;
     }
@@ -308,7 +314,7 @@ const SignupScreen = () => {
           },
           maxLength: {
             value: 64,
-            message: '비밀번호는 64자 이상이어야 합니다.',
+            message: '비밀번호는 64자 이하이어야 합니다.',
           },
           pattern: {
             value:

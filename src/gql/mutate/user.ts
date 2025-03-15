@@ -6,6 +6,7 @@ export const CREATE_ACCOUNT = gql`
       ok
       error
       token
+      refreshToken
     }
   }
 `;
@@ -22,6 +23,26 @@ export const VERIFY_EMAIL = gql`
 export const SEND_VERIFY_EMAIL = gql`
   mutation SendVerifyEmail($input: SendVerifyEmailInput!) {
     sendVerifyEmail(input: $input) {
+      ok
+      error
+    }
+  }
+`;
+
+export const LOGIN = gql`
+  mutation Login($input: LoginInput!) {
+    login(input: $input) {
+      ok
+      error
+      token
+      refreshToken
+    }
+  }
+`;
+
+export const LOGOUT = gql`
+  mutation Logout {
+    logout {
       ok
       error
     }
