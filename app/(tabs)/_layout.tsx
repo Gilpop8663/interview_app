@@ -1,36 +1,23 @@
-import { Navigator, Tabs, useRouter } from 'expo-router';
+import { Tabs, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import * as SecureStore from 'expo-secure-store'; // 토큰을 SecureStore에서 가져오기
-import { ACCESS_TOKEN } from '../../src/constants/storage';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { useAuth } from '../../src/contexts/AuthContext';
 
 export default function TabLayout() {
-  const [token, setToken] = useState<string | null>(null);
+  const { token, isLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    // 앱이 처음 시작될 때 토큰을 가져오기
-    SecureStore.getItemAsync(ACCESS_TOKEN).then((savedToken) => {
-      setToken(savedToken); // 토큰이 있으면 상태에 저장
-    });
-  }, []);
-
-  useEffect(() => {
-    if (token === null) {
-      return; // 토큰이 아직 로딩 중이라면 아무것도 하지 않음
+    if (!isLoading && !token) {
+      router.replace('/login'); // replace를 사용하여 뒤로 가기 방지
     }
+  }, [token, isLoading, router]);
 
-    if (!token) {
-      router.push('/login'); // 토큰이 없으면 로그인 페이지로 리디렉션
-    }
-  }, [token, router]);
-
-  if (token === null) {
-    // 로딩 중일 때 표시할 UI
+  if (isLoading) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#007bff" style={styles.loader} />
+        <ActivityIndicator size="large" color="#007bff" />
       </View>
     );
   }

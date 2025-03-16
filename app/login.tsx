@@ -17,12 +17,11 @@ const LoginScreen = () => {
     control,
     handleSubmit,
     formState: { errors },
-    setError,
   } = useForm<FormData>();
   const { login } = useLogin();
   const router = useRouter();
 
-  const [rememberMe, setRememberMe] = useState(false); // rememberMe 상태 추가
+  const [rememberMe, setRememberMe] = useState(true); // rememberMe 상태 추가
 
   const handleLogin = async (data: { email: string; password: string }) => {
     const { email, password } = data;

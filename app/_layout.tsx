@@ -12,6 +12,7 @@ import {
 import { onError } from '@apollo/client/link/error';
 import * as SecureStore from 'expo-secure-store'; // SecureStore로 토큰 저장
 import { ACCESS_TOKEN } from '../src/constants/storage';
+import { AuthProvider } from '../src/contexts/AuthContext';
 
 interface RefreshTokenResult {
   data: {
@@ -135,28 +136,30 @@ type ItemRouteParams = {
 
 export default function RootLayout() {
   return (
-    <ApolloProvider client={client}>
-      <Stack>
-        <Stack.Screen
-          name="(tabs)"
-          options={{ title: '홈', headerShown: false }}
-        />
-        <Stack.Screen
-          name="modal"
-          options={{ presentation: 'modal', title: '모달' }}
-        />
-        <Stack.Screen
-          name="item/[id]"
-          options={({ route }) => {
-            const { id } = route.params as ItemRouteParams;
-            return {
-              title: `아이템 ${id}`,
-            };
-          }}
-        />
-        <Stack.Screen name="login" options={{ title: '로그인' }} />
-        <Stack.Screen name="signUp" options={{ title: '회원가입' }} />
-      </Stack>
-    </ApolloProvider>
+    <AuthProvider>
+      <ApolloProvider client={client}>
+        <Stack>
+          <Stack.Screen
+            name="(tabs)"
+            options={{ title: '홈', headerShown: false }}
+          />
+          <Stack.Screen
+            name="modal"
+            options={{ presentation: 'modal', title: '모달' }}
+          />
+          <Stack.Screen
+            name="item/[id]"
+            options={({ route }) => {
+              const { id } = route.params as ItemRouteParams;
+              return {
+                title: `아이템 ${id}`,
+              };
+            }}
+          />
+          <Stack.Screen name="login" options={{ title: '로그인' }} />
+          <Stack.Screen name="signUp" options={{ title: '회원가입' }} />
+        </Stack>
+      </ApolloProvider>
+    </AuthProvider>
   );
 }
