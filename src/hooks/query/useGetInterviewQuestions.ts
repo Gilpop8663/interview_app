@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { GET_INTERVIEW_QUESTIONS } from '@gql/query/interview';
 import { useSuspenseQuery } from '@apollo/client';
 import { Alert } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getItemAsync, setItemAsync, setItemSync } from '@utils/storage';
 
 interface InterviewQuestion {
   id: number;
@@ -15,7 +15,7 @@ interface GetInterviewQuestionsData {
 
 const saveProgress = async (questionIndex: number) => {
   try {
-    await AsyncStorage.setItem('progress', JSON.stringify(questionIndex));
+    await setItemAsync('progress', JSON.stringify(questionIndex));
   } catch (error) {
     console.error('진행도 저장 실패:', error);
   }
@@ -23,7 +23,7 @@ const saveProgress = async (questionIndex: number) => {
 
 const loadProgress = async () => {
   try {
-    const progress = await AsyncStorage.getItem('progress');
+    const progress = await getItemAsync('progress');
     return progress ? JSON.parse(progress) : 0;
   } catch (error) {
     console.error('진행도 불러오기 실패:', error);

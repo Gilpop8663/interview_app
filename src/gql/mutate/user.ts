@@ -66,3 +66,21 @@ export const RESET_PASSWORD = gql`
     }
   }
 `;
+
+export const EDIT_PROFILE = gql`
+  mutation EditProfile($input: EditProfileInput!) {
+    editProfile(input: $input) {
+      ok
+      error
+    }
+  }
+`;
+
+export const DELETE_ACCOUNT = gql`
+  mutation DeleteAccount($input: DeleteAccountInput!) {
+    deleteAccount(input: $input) {
+      ok
+      error
+    }
+  }
+`;

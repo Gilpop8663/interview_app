@@ -1,5 +1,7 @@
+import { useDeleteAccount } from '@hooks/mutate/user/useDeleteAccount';
+import { useEditProfile } from '@hooks/mutate/user/useEditProfile';
 import { useMe } from '@hooks/query/user/useMe';
-import React, { useState } from 'react';
+import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
   View,
@@ -19,20 +21,18 @@ export default function AccountSetting() {
   const {
     control,
     handleSubmit,
-    setValue,
-    getValues,
     setError,
-    clearErrors,
     formState: { errors },
   } = useForm<FormData>();
+  const { editProfile } = useEditProfile();
+  const { deleteAccount } = useDeleteAccount();
 
   const isValidNickname = (nickname: string) => {
     const regex = /^[a-zA-Z0-9가-힣]*$/;
     return regex.test(nickname);
   };
 
-  // 닉네임 변경 처리
-  const handleNicknameChange = (data: FormData) => {
+  const handleNicknameChange = async (data: FormData) => {
     const { nickname } = data;
 
     if (!isValidNickname(nickname)) {
@@ -44,11 +44,12 @@ export default function AccountSetting() {
       return;
     }
 
-    if (nickname.trim()) {
+    const result = await editProfile({ nickname: nickname.trim() });
+
+    if (result?.ok) {
       Alert.alert('닉네임 변경', `닉네임이 변경되었습니다: ${nickname}`);
-      // 서버에 닉네임 업데이트 요청을 여기에 추가
     } else {
-      Alert.alert('알림', '유효한 닉네임을 입력해 주세요.');
+      Alert.alert('알림', result?.error || '유효한 닉네임을 입력해 주세요.');
     }
   };
 
@@ -58,14 +59,12 @@ export default function AccountSetting() {
       { text: '취소', style: 'cancel' },
       {
         text: '확인',
-        onPress: () => Alert.alert('알림', '계정이 삭제되었습니다.'),
+        onPress: () => {
+          deleteAccount({ userId: data.me.id });
+          Alert.alert('알림', '계정이 삭제되었습니다.');
+        },
       },
     ]);
-  };
-
-  // 로그아웃 처리
-  const handleLogout = () => {
-    Alert.alert('알림', '로그아웃되었습니다.');
   };
 
   return (

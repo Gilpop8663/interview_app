@@ -5,8 +5,8 @@ import { useVerifyEmail } from '@hooks/mutate/user/useVerifyEmail';
 import { useCreateAccount } from '@hooks/mutate/user/useCreateAccount';
 import { useRouter } from 'expo-router';
 import { Controller, useForm } from 'react-hook-form';
-import * as SecureStore from 'expo-secure-store';
 import { ACCESS_TOKEN } from '@constants/storage';
+import { setItemAsync } from '@utils/storage';
 
 interface FormData {
   email: string;
@@ -113,7 +113,7 @@ const SignupScreen = () => {
       Alert.alert('회원가입 성공', '회원가입에 성공했습니다');
 
       if (result.token) {
-        await SecureStore.setItemAsync(ACCESS_TOKEN, result.token);
+        setItemAsync(ACCESS_TOKEN, result.token);
       }
       router.push('/(tabs)');
       return;

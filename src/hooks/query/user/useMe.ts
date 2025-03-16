@@ -12,7 +12,7 @@ export const useMe = () => {
 
   try {
     const { data } = useSuspenseQuery<Result>(ME, {
-      fetchPolicy: 'network-only', // 최신 데이터를 가져오도록 설정
+      fetchPolicy: 'network-only',
     });
 
     return { data };
@@ -20,7 +20,10 @@ export const useMe = () => {
     if (error.networkError?.statusCode === 401) {
       console.log('🔴 인증 오류: 401 - 자동 로그아웃 처리');
       logout(); // 401 발생 시 자동 로그아웃
+    } else if (error.graphQLErrors?.[0]?.message === 'Forbidden resource') {
+      console.log('🔴 권한 없음 오류 - 403 Forbidden');
     }
+
     throw error; // 에러를 다시 던져서 Suspense가 처리하도록 함
   }
 };

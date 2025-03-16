@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import * as SecureStore from 'expo-secure-store';
 import { ACCESS_TOKEN } from '@constants/storage';
+import { deleteItemAsync, getItemAsync } from '@utils/storage';
 
 interface AuthContextType {
   token: string | null;
@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const loadToken = async () => {
-      const storedToken = await SecureStore.getItemAsync(ACCESS_TOKEN);
+      const storedToken = await getItemAsync(ACCESS_TOKEN);
       setToken(storedToken);
       setIsLoading(false);
     };
@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const logout = async () => {
-    await SecureStore.deleteItemAsync(ACCESS_TOKEN);
+    deleteItemAsync(ACCESS_TOKEN);
     setToken(null);
   };
 

@@ -9,11 +9,11 @@ import {
 } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { Link, useRouter } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
 import Checkbox from 'expo-checkbox';
 import { useLogin } from '@hooks/mutate/user/useLogin';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '@constants/storage';
 import { useAuth } from '@contexts/AuthContext';
+import { setItemAsync } from '@utils/storage';
 
 interface FormData {
   email: string;
@@ -35,17 +35,17 @@ const LoginScreen = () => {
   const handleLogin = async (data: { email: string; password: string }) => {
     const { email, password } = data;
 
-    console.log('로그인 시도:', { email, password });
     const result = await login({ email, password, rememberMe });
 
     if (result?.ok) {
       const { token, refreshToken } = result;
 
       if (token) {
-        await SecureStore.setItemAsync(ACCESS_TOKEN, token ?? '');
+        setItemAsync(ACCESS_TOKEN, token ?? '');
       }
+
       if (refreshToken) {
-        await SecureStore.setItemAsync(REFRESH_TOKEN, refreshToken ?? '');
+        setItemAsync(REFRESH_TOKEN, refreshToken ?? '');
       }
 
       setToken(token ?? null);
