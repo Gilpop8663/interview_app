@@ -144,6 +144,10 @@ export default function RootLayout() {
             options={{ title: '홈', headerShown: false }}
           />
           <Stack.Screen
+            name="(auth)"
+            options={{ title: '회원', headerShown: false }}
+          />
+          <Stack.Screen
             name="modal"
             options={{ presentation: 'modal', title: '모달' }}
           />
@@ -156,8 +160,6 @@ export default function RootLayout() {
               };
             }}
           />
-          <Stack.Screen name="login" options={{ title: '로그인' }} />
-          <Stack.Screen name="signUp" options={{ title: '회원가입' }} />
         </Stack>
       </ApolloProvider>
     </AuthProvider>

@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+} from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { Link } from 'expo-router';
+import { useForgotPassword } from '@hooks/mutate/user/useForgotPassword';
 
 interface FormData {
   email: string;
@@ -14,17 +22,21 @@ const ForgotPasswordScreen = () => {
     formState: { errors },
   } = useForm<FormData>();
   const [loading, setLoading] = useState(false);
+  const { forgotPassword } = useForgotPassword();
 
   const handleForgotPassword = async (data: { email: string }) => {
     setLoading(true);
-    // const result = await forgotPassword(data.email);
+    const result = await forgotPassword({ email: data.email });
     setLoading(false);
 
-    // if (result?.ok) {
-    //   Alert.alert('이메일 전송 완료', '비밀번호 재설정 링크를 확인해주세요.');
-    // } else {
-    //   Alert.alert('오류', '해당 이메일이 존재하지 않거나 오류가 발생했습니다.');
-    // }
+    if (result?.ok) {
+      Alert.alert('이메일 전송 완료', '비밀번호 재설정 링크를 확인해주세요.');
+    } else {
+      Alert.alert(
+        result?.error || '오류',
+        '해당 이메일이 존재하지 않거나 오류가 발생했습니다.'
+      );
+    }
   };
 
   return (
@@ -63,11 +75,19 @@ const ForgotPasswordScreen = () => {
         )}
       />
 
-      <Button
-        title={loading ? '처리 중...' : '비밀번호 재설정 링크 보내기'}
+      {/* 네모난 버튼 */}
+      <TouchableOpacity
+        style={[
+          styles.button,
+          { backgroundColor: loading ? '#cccccc' : '#007bff' },
+        ]}
         onPress={handleSubmit(handleForgotPassword)}
         disabled={loading}
-      />
+      >
+        <Text style={styles.buttonText}>
+          {loading ? '처리 중...' : '비밀번호 재설정 링크 보내기'}
+        </Text>
+      </TouchableOpacity>
 
       {/* 로그인으로 돌아가기 */}
       <View style={styles.loginContainer}>
@@ -111,6 +131,18 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: 12,
     marginBottom: 10,
+  },
+  button: {
+    width: '100%',
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '600',
   },
   loginContainer: {
     marginTop: 20,

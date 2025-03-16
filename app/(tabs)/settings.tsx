@@ -1,13 +1,21 @@
+import { useAuth } from '@contexts/AuthContext';
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Switch, TouchableOpacity } from 'react-native';
 
 export default function SettingsTab() {
   const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const { logout } = useAuth();
 
   const toggleNotifications = () =>
     setIsNotificationsEnabled(!isNotificationsEnabled);
   const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
+
+  const handleLogout = () => {
+    // 실제 로그아웃 로직을 여기에 추가하세요.
+    logout();
+    alert('로그아웃되었습니다.');
+  };
 
   return (
     <View style={styles.container}>
@@ -48,6 +56,15 @@ export default function SettingsTab() {
           onPress={() => alert('앱 정보')}
         >
           <Text style={styles.buttonText}>앱 정보</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.settingItem}>
+        <TouchableOpacity
+          style={[styles.button, { backgroundColor: '#dc3545' }]} // 빨간색으로 설정
+          onPress={handleLogout}
+        >
+          <Text style={styles.buttonText}>로그아웃</Text>
         </TouchableOpacity>
       </View>
     </View>

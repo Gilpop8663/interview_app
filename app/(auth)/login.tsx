@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+} from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { Link, useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import Checkbox from 'expo-checkbox';
 import { useLogin } from '@hooks/mutate/user/useLogin';
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '@constants/storage';
+import { useAuth } from '@contexts/AuthContext';
 
 interface FormData {
   email: string;
@@ -20,6 +28,7 @@ const LoginScreen = () => {
   } = useForm<FormData>();
   const { login } = useLogin();
   const router = useRouter();
+  const { setToken } = useAuth();
 
   const [rememberMe, setRememberMe] = useState(true);
 
@@ -39,6 +48,7 @@ const LoginScreen = () => {
         await SecureStore.setItemAsync(REFRESH_TOKEN, refreshToken ?? '');
       }
 
+      setToken(token ?? null);
       router.push('/(tabs)');
       Alert.alert('로그인 성공', '로그인에 성공했습니다!');
       return;
@@ -113,24 +123,39 @@ const LoginScreen = () => {
       />
 
       {/* rememberMe 체크박스 */}
-      <View style={styles.checkboxContainer}>
-        <Checkbox value={rememberMe} onValueChange={setRememberMe} />
-        <Text style={styles.checkboxText}>자동 로그인</Text>
+      <View style={styles.subContainer}>
+        <View style={styles.checkboxContainer}>
+          <Checkbox value={rememberMe} onValueChange={setRememberMe} />
+          <Text style={styles.checkboxText}>자동 로그인</Text>
+        </View>
+        <View style={styles.forgotPasswordContainer}>
+          <Link href="/forgotPassword">
+            <Text style={styles.forgotPasswordText}>
+              비밀번호를 잊으셨나요?
+            </Text>
+          </Link>
+        </View>
       </View>
 
-      <Button title="로그인" onPress={handleSubmit(handleLogin)} />
+      {/* 로그인 버튼 */}
+      <TouchableOpacity
+        style={styles.loginButton}
+        onPress={handleSubmit(handleLogin)}
+      >
+        <Text style={styles.loginButtonText}>로그인</Text>
+      </TouchableOpacity>
 
-      {/* ✅ 비밀번호 찾기 버튼 추가 */}
-      <View style={styles.forgotPasswordContainer}>
-        <Link href="/forgotPassword">
-          <Text style={styles.forgotPasswordText}>비밀번호를 잊으셨나요?</Text>
-        </Link>
+      {/* 로그인 또는 */}
+      <View style={styles.orContainer}>
+        <View style={styles.orLine} />
+        <Text style={styles.orText}>또는</Text>
+        <View style={styles.orLine} />
       </View>
 
+      {/* 회원가입 */}
       <View style={styles.signupContainer}>
-        <Text style={styles.signupText}>회원가입 하시겠습니까?</Text>
         <Link style={styles.signUp} href="/signUp">
-          <Text style={styles.signUpText}>회원가입</Text>
+          <Text style={styles.signUpText}>계정이 없으신가요? 회원가입</Text>
         </Link>
       </View>
     </View>
@@ -163,15 +188,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-    marginBottom: 20,
   },
   checkboxText: {
     fontSize: 16,
     color: '#333',
   },
-  forgotPasswordContainer: {
-    marginTop: 10,
-  },
+  forgotPasswordContainer: {},
   forgotPasswordText: {
     fontSize: 16,
     color: '#0066CC',
@@ -198,6 +220,43 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: 12,
     marginTop: 5,
+  },
+  subContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  loginButton: {
+    backgroundColor: '#007bff',
+    width: '100%',
+    paddingVertical: 14,
+    borderRadius: 8,
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  loginButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  orContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 10,
+  },
+  orText: {
+    fontSize: 16,
+    color: '#666',
+    marginHorizontal: 10,
+  },
+  orLine: {
+    width: '30%',
+    height: 1,
+    backgroundColor: '#ccc',
   },
 });
 
