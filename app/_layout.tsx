@@ -143,10 +143,7 @@ export default function RootLayout() {
             name="(tabs)"
             options={{ title: '홈', headerShown: false }}
           />
-          <Stack.Screen
-            name="(auth)"
-            options={{ title: '회원', headerShown: false }}
-          />
+          <Stack.Screen name="(auth)" options={{ title: '회원' }} />
           <Stack.Screen
             name="modal"
             options={{ presentation: 'modal', title: '모달' }}

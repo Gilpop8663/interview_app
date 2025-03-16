@@ -12,5 +12,6 @@ export const ROUTES = {
   SIGNUP: `${LAYOUT_PATHS.AUTH}/signUp`,
   FORGOT_PASSWORD: `${LAYOUT_PATHS.AUTH}/forgotPassword`,
   RESET_PASSWORD: `${LAYOUT_PATHS.AUTH}/resetPassword`,
+  ACCOUNT_SETTING: `${LAYOUT_PATHS.AUTH}/accountSetting`,
   MODAL: 'modal',
 };

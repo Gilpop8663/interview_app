@@ -27,6 +27,12 @@ export default function TabLayout() {
           title: '회원가입',
         }}
       />
+      <Stack.Screen
+        name="accountSetting"
+        options={{
+          title: '계정 설정',
+        }}
+      />
     </Stack>
   );
 }

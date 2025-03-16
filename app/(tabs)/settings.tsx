@@ -1,15 +1,11 @@
 import { useAuth } from '@contexts/AuthContext';
+import { ROUTES } from '@src/routes';
+import { Link } from 'expo-router';
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Switch, TouchableOpacity } from 'react-native';
 
 export default function SettingsTab() {
-  const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(true);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const { logout } = useAuth();
-
-  const toggleNotifications = () =>
-    setIsNotificationsEnabled(!isNotificationsEnabled);
-  const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
 
   const handleLogout = () => {
     // 실제 로그아웃 로직을 여기에 추가하세요.
@@ -17,44 +13,22 @@ export default function SettingsTab() {
     alert('로그아웃되었습니다.');
   };
 
+  const handleAppInfo = () => {
+    // 앱 정보에 현재 버전을 표시
+    alert('현재 버전: 0.0.1v');
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>설정</Text>
-
       <View style={styles.settingItem}>
-        <Text style={styles.settingTitle}>알림</Text>
-        <Switch
-          value={isNotificationsEnabled}
-          onValueChange={toggleNotifications}
-          trackColor={{ false: '#767577', true: '#81b0ff' }}
-          thumbColor={isNotificationsEnabled ? '#f5dd4b' : '#f4f3f4'}
-        />
-      </View>
-
-      <View style={styles.settingItem}>
-        <Text style={styles.settingTitle}>다크 모드</Text>
-        <Switch
-          value={isDarkMode}
-          onValueChange={toggleDarkMode}
-          trackColor={{ false: '#767577', true: '#81b0ff' }}
-          thumbColor={isDarkMode ? '#f5dd4b' : '#f4f3f4'}
-        />
-      </View>
-
-      <View style={styles.settingItem}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => alert('계정 설정')}
-        >
+        <Link href={ROUTES.ACCOUNT_SETTING} style={styles.button}>
           <Text style={styles.buttonText}>계정 설정</Text>
-        </TouchableOpacity>
+        </Link>
       </View>
 
       <View style={styles.settingItem}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => alert('앱 정보')}
-        >
+        <TouchableOpacity style={styles.button} onPress={handleAppInfo}>
           <Text style={styles.buttonText}>앱 정보</Text>
         </TouchableOpacity>
       </View>
