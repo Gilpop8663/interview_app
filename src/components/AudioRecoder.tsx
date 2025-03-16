@@ -10,7 +10,7 @@ import {
 import { useAudioRecorder, AudioModule, RecordingPresets } from 'expo-audio';
 import AudioPlayer from './AudioPlayer';
 import * as FileSystem from 'expo-file-system'; // 파일 읽기 용도
-import { useProcessInterviewAudio } from '../hooks/mutate/useUploadSpeechFile';
+import { useProcessInterviewAudio } from '@hooks/mutate/useUploadSpeechFile';
 import { Ionicons } from '@expo/vector-icons'; // 아이콘 추가
 import { FeedbackCard } from './FeedbackCard';
 

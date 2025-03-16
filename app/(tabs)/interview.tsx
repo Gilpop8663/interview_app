@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { ActivityIndicator } from 'react-native';
-import InterviewFetcher from '../../src/fetcher/InterviewFetcher';
+import InterviewFetcher from '@fetcher/InterviewFetcher';
 
 const InterviewScreen = () => {
   return (

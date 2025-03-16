@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { Link } from 'expo-router';
-import { useMe } from '../../src/hooks/query/user/useMe';
+import { useMe } from '@hooks/query/user/useMe';
 
 const HomeScreenContent = () => {
   const { data } = useMe();

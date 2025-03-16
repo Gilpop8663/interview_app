@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { GET_INTERVIEW_QUESTIONS } from '../../gql/query/interview';
+import { GET_INTERVIEW_QUESTIONS } from '@gql/query/interview';
 import { useSuspenseQuery } from '@apollo/client';
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';

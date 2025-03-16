@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import { useSendVerifyEmail } from '../src/hooks/mutate/user/useSendVerifyEmail';
-import { useVerifyEmail } from '../src/hooks/mutate/user/useVerifyEmail';
-import { useCreateAccount } from '../src/hooks/mutate/user/useCreateAccount';
+import { useSendVerifyEmail } from '@hooks/mutate/user/useSendVerifyEmail';
+import { useVerifyEmail } from '@hooks/mutate/user/useVerifyEmail';
+import { useCreateAccount } from '@hooks/mutate/user/useCreateAccount';
 import { useRouter } from 'expo-router';
 import { Controller, useForm } from 'react-hook-form';
 import * as SecureStore from 'expo-secure-store';
-import { ACCESS_TOKEN } from '../src/constants/storage';
+import { ACCESS_TOKEN } from '@constants/storage';
 
 interface FormData {
   email: string;

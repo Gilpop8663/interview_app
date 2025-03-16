@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { Link, useRouter } from 'expo-router';
-import { useLogin } from '../src/hooks/mutate/user/useLogin';
 import * as SecureStore from 'expo-secure-store';
-import { ACCESS_TOKEN, REFRESH_TOKEN } from '../src/constants/storage';
 import Checkbox from 'expo-checkbox';
+import { useLogin } from '@hooks/mutate/user/useLogin';
+import { ACCESS_TOKEN, REFRESH_TOKEN } from '@constants/storage';
 
 interface FormData {
   email: string;
@@ -21,12 +21,11 @@ const LoginScreen = () => {
   const { login } = useLogin();
   const router = useRouter();
 
-  const [rememberMe, setRememberMe] = useState(true); // rememberMe 상태 추가
+  const [rememberMe, setRememberMe] = useState(true);
 
   const handleLogin = async (data: { email: string; password: string }) => {
     const { email, password } = data;
 
-    // 여기에 로그인 API 호출을 추가하고, 성공 시 토큰 저장 등의 로직을 작성할 수 있습니다.
     console.log('로그인 시도:', { email, password });
     const result = await login({ email, password, rememberMe });
 
@@ -121,6 +120,13 @@ const LoginScreen = () => {
 
       <Button title="로그인" onPress={handleSubmit(handleLogin)} />
 
+      {/* ✅ 비밀번호 찾기 버튼 추가 */}
+      <View style={styles.forgotPasswordContainer}>
+        <Link href="/forgotPassword">
+          <Text style={styles.forgotPasswordText}>비밀번호를 잊으셨나요?</Text>
+        </Link>
+      </View>
+
       <View style={styles.signupContainer}>
         <Text style={styles.signupText}>회원가입 하시겠습니까?</Text>
         <Link style={styles.signUp} href="/signUp">
@@ -162,6 +168,14 @@ const styles = StyleSheet.create({
   checkboxText: {
     fontSize: 16,
     color: '#333',
+  },
+  forgotPasswordContainer: {
+    marginTop: 10,
+  },
+  forgotPasswordText: {
+    fontSize: 16,
+    color: '#0066CC',
+    fontWeight: '600',
   },
   signupContainer: {
     marginTop: 20,

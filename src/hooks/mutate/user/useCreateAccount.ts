@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { CREATE_ACCOUNT } from '../../../gql/mutate/user';
+import { CREATE_ACCOUNT } from '@gql/mutate/user';
 
 interface Result {
   ok: boolean;

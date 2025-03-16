@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { VERIFY_EMAIL } from '../../../gql/mutate/user';
+import { VERIFY_EMAIL } from '@gql/mutate/user';
 
 interface Result {
   ok: boolean;

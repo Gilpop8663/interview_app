@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from '@apollo/client';
-import { ME } from '../../../gql/query/user';
-import { User } from '../../../types/user';
-import { useAuth } from '../../../contexts/AuthContext';
+import { ME } from '@gql/query/user';
+import { useAuth } from '@contexts/AuthContext';
+import { User } from '@models/user';
 
 interface Result {
   me: User;

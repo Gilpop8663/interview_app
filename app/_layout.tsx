@@ -11,8 +11,8 @@ import {
 } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 import * as SecureStore from 'expo-secure-store'; // SecureStore로 토큰 저장
-import { ACCESS_TOKEN } from '../src/constants/storage';
-import { AuthProvider } from '../src/contexts/AuthContext';
+import { ACCESS_TOKEN } from '@constants/storage';
+import { AuthProvider } from '@contexts/AuthContext';
 
 interface RefreshTokenResult {
   data: {

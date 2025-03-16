@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { LOGOUT } from '../../../gql/mutate/user';
+import { LOGOUT } from '@gql/mutate/user';
 
 interface LogoutResponse {
   logout: {

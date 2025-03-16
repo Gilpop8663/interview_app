@@ -7,8 +7,8 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import AudioRecorder from '../../src/components/AudioRecoder';
-import { useGetInterviewQuestions } from '../hooks/query/useGetInterviewQuestions';
+import AudioRecorder from '@components/AudioRecoder';
+import { useGetInterviewQuestions } from '@hooks/query/useGetInterviewQuestions';
 
 export default function InterviewFetcher() {
   const { data, questionIndex, handleNextQuestion } =

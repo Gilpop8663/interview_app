@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { LOGIN } from '../../../gql/mutate/user';
+import { LOGIN } from '@gql/mutate/user';
 
 interface LoginResponse {
   ok: boolean;

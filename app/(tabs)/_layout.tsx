@@ -2,7 +2,8 @@ import { Tabs, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import { useAuth } from '../../src/contexts/AuthContext';
+import { useAuth } from '@contexts/AuthContext';
+import { ROUTES } from '@src/routes';
 
 export default function TabLayout() {
   const { token, isLoading } = useAuth();
@@ -10,7 +11,7 @@ export default function TabLayout() {
 
   useEffect(() => {
     if (!isLoading && !token) {
-      router.replace('/login'); // replace를 사용하여 뒤로 가기 방지
+      router.replace(ROUTES.LOGIN); // replace를 사용하여 뒤로 가기 방지
     }
   }, [token, isLoading, router]);
 

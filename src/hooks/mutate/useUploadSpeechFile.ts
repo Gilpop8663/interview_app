@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { PROCESS_INTERVIEW_AUDIO } from '../../gql/mutate/interview';
+import { PROCESS_INTERVIEW_AUDIO } from '@gql/mutate/interview';
 import { useEffect } from 'react';
 
 interface Result {
