@@ -44,7 +44,7 @@ const HomeScreen = () => {
         <ActivityIndicator size="large" color="#007bff" style={styles.loader} />
       }
     >
-      {/* <HomeScreenContent /> */}
+      <HomeScreenContent />
     </Suspense>
   );
 };
