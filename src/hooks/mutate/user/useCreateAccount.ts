@@ -5,6 +5,7 @@ interface Result {
   ok: boolean;
   error?: string;
   token?: string;
+  refreshToken?: string;
 }
 
 interface Input {

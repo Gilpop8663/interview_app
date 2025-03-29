@@ -5,8 +5,6 @@ export const PROCESS_INTERVIEW_AUDIO = gql`
     processInterviewAudio(input: $input) {
       ok
       feedback
-      habits
-      speed
     }
   }
 `;

@@ -3,6 +3,7 @@ import { GET_INTERVIEW_QUESTIONS } from '@gql/query/interview';
 import { useSuspenseQuery } from '@apollo/client';
 import { Alert } from 'react-native';
 import { getItemAsync, setItemAsync, setItemSync } from '@utils/storage';
+import { useAudioRecording } from '@contexts/AudioRecordingContext';
 
 interface InterviewQuestion {
   id: number;
@@ -36,12 +37,18 @@ export const useGetInterviewQuestions = () => {
     GET_INTERVIEW_QUESTIONS
   );
   const [questionIndex, setQuestionIndex] = useState(0);
+  const { setRecordingTime, setIsLoading, setIsRecording, setRecordedUri } =
+    useAudioRecording();
 
   const handleNextQuestion = () => {
     if (questionIndex < data.getInterviewQuestions.length - 1) {
       const newIndex = questionIndex + 1;
       setQuestionIndex(newIndex);
       saveProgress(newIndex);
+      setRecordedUri(null);
+      setIsRecording(false);
+      setIsLoading(false);
+      setRecordingTime(0);
     } else {
       Alert.alert(
         'End of Interview',
@@ -52,6 +59,10 @@ export const useGetInterviewQuestions = () => {
             onPress: () => {
               setQuestionIndex(0);
               saveProgress(0);
+              setRecordedUri(null);
+              setIsRecording(false);
+              setIsLoading(false);
+              setRecordingTime(0);
             },
           },
           {

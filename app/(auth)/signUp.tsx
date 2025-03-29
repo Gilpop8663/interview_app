@@ -5,7 +5,7 @@ import { useVerifyEmail } from '@hooks/mutate/user/useVerifyEmail';
 import { useCreateAccount } from '@hooks/mutate/user/useCreateAccount';
 import { useRouter } from 'expo-router';
 import { Controller, useForm } from 'react-hook-form';
-import { ACCESS_TOKEN } from '@constants/storage';
+import { ACCESS_TOKEN, REFRESH_TOKEN } from '@constants/storage';
 import { setItemAsync } from '@utils/storage';
 
 interface FormData {
@@ -115,6 +115,11 @@ const SignupScreen = () => {
       if (result.token) {
         setItemAsync(ACCESS_TOKEN, result.token);
       }
+
+      if (result.refreshToken) {
+        setItemAsync(REFRESH_TOKEN, result.refreshToken);
+      }
+
       router.push('/(tabs)');
       return;
     }

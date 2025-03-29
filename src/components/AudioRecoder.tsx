@@ -13,6 +13,7 @@ import * as FileSystem from 'expo-file-system'; // 파일 읽기 용도
 import { useProcessInterviewAudio } from '@hooks/mutate/useUploadSpeechFile';
 import { Ionicons } from '@expo/vector-icons'; // 아이콘 추가
 import { FeedbackCard } from './FeedbackCard';
+import { useAudioRecording } from '@contexts/AudioRecordingContext';
 
 interface Props {
   question: string;
@@ -21,10 +22,16 @@ interface Props {
 const AudioRecorder = ({ question }: Props) => {
   const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
   const { processInterviewAudio, data } = useProcessInterviewAudio(question);
-  const [recordedUri, setRecordedUri] = useState<string | null>(null);
-  const [isRecording, setIsRecording] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [recordingTime, setRecordingTime] = useState(0);
+  const {
+    isRecording,
+    isLoading,
+    recordedUri,
+    recordingTime,
+    setRecordingTime,
+    setIsLoading,
+    setIsRecording,
+    setRecordedUri,
+  } = useAudioRecording();
   const recordInterval = useRef<NodeJS.Timeout | null>(null);
 
   const record = async () => {
@@ -32,9 +39,10 @@ const AudioRecorder = ({ question }: Props) => {
     audioRecorder.record();
     setIsRecording(true);
     setRecordingTime(0); // 녹음 시작 시 초기화
+    setRecordedUri(null);
 
     recordInterval.current = setInterval(() => {
-      setRecordingTime((prev) => prev + 1);
+      setRecordingTime((prevTime) => prevTime + 1); // prevTime을 사용하여 이전 값을 기반으로 증가
     }, 1000);
   };
 
@@ -77,6 +85,8 @@ const AudioRecorder = ({ question }: Props) => {
     if (recordInterval.current) {
       clearInterval(recordInterval.current);
     }
+
+    if (!audioRecorder.uri) return;
 
     setRecordedUri(audioRecorder.uri);
     setIsRecording(false);
@@ -135,7 +145,11 @@ const AudioRecorder = ({ question }: Props) => {
           !recordedUri && styles.uploadButtonDisabled,
         ]}
         onPress={uploadAudio}
-        disabled={!recordedUri || isLoading}
+        disabled={
+          !recordedUri ||
+          isLoading ||
+          data?.processInterviewAudio.feedback !== undefined
+        }
       >
         {isLoading ? (
           <ActivityIndicator size="small" color="#fff" />
@@ -154,20 +168,6 @@ const AudioRecorder = ({ question }: Props) => {
         <FeedbackCard
           title="피드백"
           feedback={data?.processInterviewAudio.feedback}
-        />
-      )}
-
-      {data?.processInterviewAudio.habits && (
-        <FeedbackCard
-          title="습관 피드백"
-          feedback={data?.processInterviewAudio.habits}
-        />
-      )}
-
-      {data?.processInterviewAudio.speed && (
-        <FeedbackCard
-          title="속도 피드백"
-          feedback={data?.processInterviewAudio.speed}
         />
       )}
     </View>

@@ -5,8 +5,6 @@ import { useEffect } from 'react';
 interface Result {
   ok: boolean;
   feedback: string;
-  habits: string;
-  speed: string;
 }
 
 interface Input {
