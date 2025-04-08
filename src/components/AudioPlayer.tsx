@@ -3,6 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Audio } from 'expo-av';
 import { Ionicons } from '@expo/vector-icons'; // 아이콘 추가
 import Slider from '@react-native-community/slider';
+import * as FileSystem from 'expo-file-system';
 
 const AudioPlayer = ({ uri }: { uri: string }) => {
   const [sound, setSound] = useState<Audio.Sound | null>(null);
@@ -12,6 +13,10 @@ const AudioPlayer = ({ uri }: { uri: string }) => {
 
   const loadSound = async () => {
     try {
+      const info: FileSystem.FileInfo = await FileSystem.getInfoAsync(uri, {
+        size: true,
+      });
+
       const soundUri = uri.startsWith('file://') ? uri : `file://${uri}`; // `file://` 프로토콜 추가
 
       const { sound, status } = await Audio.Sound.createAsync(
@@ -20,6 +25,7 @@ const AudioPlayer = ({ uri }: { uri: string }) => {
       );
 
       setSound(sound);
+      await sound.playAsync();
 
       if (status.isLoaded) {
         setDuration(status.durationMillis! / 1000); // 밀리초 → 초 변환

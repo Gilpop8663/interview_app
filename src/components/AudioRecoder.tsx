@@ -7,20 +7,21 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from 'react-native';
-import { useAudioRecorder, AudioModule, RecordingPresets } from 'expo-audio';
 import AudioPlayer from './AudioPlayer';
 import * as FileSystem from 'expo-file-system'; // 파일 읽기 용도
 import { useProcessInterviewAudio } from '@hooks/mutate/useUploadSpeechFile';
 import { Ionicons } from '@expo/vector-icons'; // 아이콘 추가
 import { FeedbackCard } from './FeedbackCard';
 import { useAudioRecording } from '@contexts/AudioRecordingContext';
+import { Audio } from 'expo-av';
+import * as MediaLibrary from 'expo-media-library';
 
 interface Props {
   question: string;
 }
 
 const AudioRecorder = ({ question }: Props) => {
-  const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
+  const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const { processInterviewAudio, data } = useProcessInterviewAudio(question);
   const {
     isRecording,
@@ -34,9 +35,34 @@ const AudioRecorder = ({ question }: Props) => {
   } = useAudioRecording();
   const recordInterval = useRef<NodeJS.Timeout | null>(null);
 
+  const requestPermissions = async () => {
+    const { status: audioStatus } = await Audio.requestPermissionsAsync();
+    const { status: mediaLibStatus } =
+      await MediaLibrary.requestPermissionsAsync(true); // true를 설정하여 WRITE_EXTERNAL_STORAGE 요청
+
+    if (audioStatus !== 'granted' || mediaLibStatus !== 'granted') {
+      Alert.alert('권한 필요', '필요한 권한이 모두 부여되지 않았습니다.');
+      throw new Error('Permission not granted');
+    }
+  };
+
   const record = async () => {
-    await audioRecorder.prepareToRecordAsync();
-    audioRecorder.record();
+    await Audio.setAudioModeAsync({
+      allowsRecordingIOS: true,
+      playsInSilentModeIOS: true,
+      staysActiveInBackground: false,
+      shouldDuckAndroid: true,
+      playThroughEarpieceAndroid: false,
+    });
+
+    await requestPermissions();
+
+    const { recording } = await Audio.Recording.createAsync(
+      Audio.RecordingOptionsPresets.LOW_QUALITY
+    );
+
+    setRecording(recording);
+
     setIsRecording(true);
     setRecordingTime(0); // 녹음 시작 시 초기화
     setRecordedUri(null);
@@ -80,15 +106,36 @@ const AudioRecorder = ({ question }: Props) => {
   };
 
   const stopRecording = async () => {
-    await audioRecorder.stop();
+    await recording?.stopAndUnloadAsync();
+    const uri = recording?.getURI();
+    console.log('녹음 끝! uri:', uri);
+    setRecordedUri(uri ?? null);
 
     if (recordInterval.current) {
       clearInterval(recordInterval.current);
     }
 
-    if (!audioRecorder.uri) return;
+    if (!uri) return;
 
-    setRecordedUri(audioRecorder.uri);
+    const fileName = `recording_${Date.now()}.wav`;
+    const newUri = `${FileSystem.documentDirectory}/${fileName}`;
+
+    await FileSystem.moveAsync({
+      from: uri, // 임시 파일 경로
+      to: newUri, // 이동할 목적지 경로 (영구 저장소)
+    });
+
+    await MediaLibrary.createAssetAsync(newUri);
+
+    const fileInfo = await FileSystem.getInfoAsync(uri, {
+      size: true,
+    });
+
+    if (fileInfo.exists) {
+      console.log('녹음된 파일 사이즈:', fileInfo.size); // ✅ 이 시점에서 사이즈 있어야 정상
+    }
+
+    setRecordedUri(newUri);
     setIsRecording(false);
     Alert.alert('녹음이 완료되었습니다!');
   };
@@ -102,12 +149,7 @@ const AudioRecorder = ({ question }: Props) => {
   };
 
   useEffect(() => {
-    (async () => {
-      const status = await AudioModule.requestRecordingPermissionsAsync();
-      if (!status.granted) {
-        Alert.alert('Permission to access microphone was denied');
-      }
-    })();
+    requestPermissions();
   }, []);
 
   return (

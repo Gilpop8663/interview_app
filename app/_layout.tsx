@@ -27,7 +27,8 @@ interface RefreshTokenResult {
   };
 }
 
-const fetchUrl = process.env.VITE_DB_URL || 'http://localhost:3000/graphql';
+// const fetchUrl = process.env.VITE_DB_URL || 'http://localhost:3000/graphql';
+const fetchUrl = 'https://server.interview.coddink.com/graphql';
 
 // Error Link
 const errorLink = onError(({ graphQLErrors, operation, forward }) => {
